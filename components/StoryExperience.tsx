@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation'
 import { MotionConfig, AnimatePresence, motion } from 'framer-motion';
 
 import { THEMES, MOCK_DATA } from '../constants';
@@ -13,7 +14,6 @@ import { transformDrupalData } from '../utils/transformers';
 
 import StoryPlayer from './StoryPlayer';
 import UsernameForm from './sections/UsernameForm';
-import { collectAndStoreDrupalUserData } from '@/utils/drupal-api';
 import { getDrupalUserData } from '@/app/actions';
 
 interface StoryExperienceProps {
@@ -35,6 +35,7 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
   reduceMotion = false,
   year = 2025,
   demoData = MOCK_DATA,
+  slugUserData = null
 }) => {
   // Data State
   const [userData, setUserData] = useState<UserYearData | null>(null);
@@ -43,6 +44,8 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
   const [loadingAvatar, setLoadingAvatar] = useState<string | undefined>(
     undefined
   );
+  const[drupalData, setDrupalData] = useState<UserYearData | null>(null) 
+  const router = useRouter()
 
   const themeStyles = THEMES[theme];
 
@@ -52,7 +55,7 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
     setLoadingAvatar(undefined);
 
     const data = await getDrupalUserData(username)
-    console.log("CLIENT", data)
+    setDrupalData(data)
 
     try {
       // 1. Pre-fetch avatar for instant feedback
@@ -94,6 +97,11 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
   };
 
   const handleReset = () => {
+    if (slugUserData) {
+      router.push('/');
+      return;
+    }
+
     setUserData(null);
     setError(null);
     setLoadingAvatar(undefined);
@@ -105,7 +113,7 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
         className={`fixed inset-0 w-full h-full overflow-hidden ${themeStyles.bg} flex items-center justify-center`}
       >
         <AnimatePresence mode="wait">
-          {!userData ? (
+          {!userData && !slugUserData ? (
             <motion.div
               key="form"
               className="w-full h-full overflow-y-auto"
@@ -129,7 +137,7 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
               initial={{ opacity: 0, scale: 1.1 }}
               animate={{ opacity: 1, scale: 1 }}
             >
-              <StoryPlayer data={userData} onExit={handleReset} />
+              <StoryPlayer data={slugUserData ? slugUserData : drupalData} onExit={handleReset}  />
             </motion.div>
           )}
         </AnimatePresence>
