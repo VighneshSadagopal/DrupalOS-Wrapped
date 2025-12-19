@@ -48,6 +48,7 @@ export interface UserYearData {
   menteeCount?: number; // Number of people mentored
   aiContributionCount?: number; // Number of AI-related contributions
   drupalCoreContributionCount?: number; // Number of Drupal Core contributions
+  contributorRoles?: string[]; // List of roles held by the user
 }
 
 export type ThemeType = 'bright' | 'muted';

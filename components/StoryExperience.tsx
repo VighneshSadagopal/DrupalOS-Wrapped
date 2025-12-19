@@ -129,7 +129,7 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
               initial={{ opacity: 0, scale: 1.1 }}
               animate={{ opacity: 1, scale: 1 }}
             >
-              <StoryPlayer data={userData} onExit={handleReset} drupalUserData={drupalData}  />
+              <StoryPlayer data={drupalData} onExit={handleReset}  />
             </motion.div>
           )}
         </AnimatePresence>
