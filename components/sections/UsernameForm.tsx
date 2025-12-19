@@ -25,7 +25,7 @@ const UsernameForm: React.FC<UsernameFormProps> = ({ onSearch, onDemo, loading, 
   };
 
   return (
-    <div className={`min-h-screen flex flex-col items-center justify-center p-6 ${themeStyles.bg}`}>
+    <div className={`min-h-dvh flex flex-col items-center justify-center p-6 ${themeStyles.bg}`}>
       <Confetti active={false} />
       
       <motion.div 
@@ -87,13 +87,14 @@ const UsernameForm: React.FC<UsernameFormProps> = ({ onSearch, onDemo, loading, 
               </form>
               
               <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 text-center">
-                <button 
+                {/* <button 
                   onClick={onDemo}
                   className={`flex items-center justify-center gap-2 mx-auto text-sm font-medium hover:underline ${themeStyles.textMuted}`}
                 >
                   <PlayCircle className="w-4 h-4" />
                   No account? Try Demo Mode
-                </button>
+                </button> */}
+                <div className='font-medium text-sm text-stone-400 py-2'>Powered by QED42</div>
               </div>
             </>
           ) : (

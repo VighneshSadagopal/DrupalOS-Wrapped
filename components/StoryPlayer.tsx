@@ -111,17 +111,17 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
-      className="w-full pt-8 flex flex-col items-center"
+      className="w-full pt-4 flex flex-col items-center  z-20 flex-none"
     >
       {/* Top Progress Bar */}
-      <div className="w-full flex gap-2 z-20 mb-6">
+      <div className="w-full flex gap-1.5 mb-6 max-w-[90%] mx-auto">
         {Array.from({ length: totalSlides }).map((_, i) => (
           <div
             key={i}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
+            className={`h-1 rounded-full transition-all duration-300 ${
               i === progressIndex
                 ? "flex-1 bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]"
-                : "w-2 bg-white/20"
+                : "w-1.5 bg-white/20"
             }`}
           />
         ))}
@@ -130,7 +130,7 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
       <div className="text-gray-400 font-mono text-xs tracking-widest uppercase mb-2 flex flex-col items-center">
         <span>{title}</span>
         {/* Connecting String */}
-        <div className="w-px h-8 bg-gradient-to-b from-gray-600 to-transparent mt-2"></div>
+        <div className="w-px h-6 bg-gradient-to-b from-gray-600 to-transparent mt-2"></div>
       </div>
     </motion.div>
   );
@@ -161,7 +161,7 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
         opacity: 1,
       },
       render: () => (
-        <div className="flex flex-col items-center justify-center h-full text-center p-8 relative z-10">
+        <div className="flex flex-col items-center justify-center h-full text-center p-8 relative z-10 max-w-sm mx-auto">
           <div className="relative">
             <div className="absolute inset-0 rounded-full bg-cyan-500 blur-xl opacity-50 animate-pulse"></div>
             <div className="w-32 h-32 rounded-full border-4 border-cyan-400 mb-8 overflow-hidden relative z-10 bg-black">
@@ -183,7 +183,7 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
             <div className="text-cyan-400 font-mono text-sm tracking-[0.2em] uppercase">
               System Access Granted
             </div>
-            <h1 className="text-5xl font-bold text-white font-display tracking-tight">
+            <h1 className="text-4xl font-bold text-white font-display tracking-tight">
               {data.username}
             </h1>
             <div className="h-1 w-20 bg-gradient-to-r from-transparent via-cyan-500 to-transparent mx-auto mt-4"></div>
@@ -229,25 +229,24 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
         return (
           <div className="flex flex-col items-center h-full w-full relative z-10 overflow-hidden bg-[#0a0a0a]">
             <SlideBackground />
-            <div className="relative z-10 flex flex-col items-center justify-between h-full w-full py-8 px-6">
+            <div className="relative z-10 flex flex-col items-center h-full w-full py-6 px-6 max-w-md mx-auto">
               <SlideHeader
                 title={`@${data.username}`}
                 progressIndex={index}
                 totalSlides={total}
               />
 
-              <div className="flex flex-col items-center text-center gap-8 flex-1 justify-center -mt-10">
+              <div className="flex-1 flex flex-col items-center justify-center text-center gap-8 w-full">
                 <motion.h2
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.4, duration: 0.5 }}
-                  className="text-2xl md:text-3xl font-bold text-white font-display leading-tight max-w-[280px]"
+                  className="text-2xl font-bold text-white font-display leading-tight max-w-[280px]"
                 >
                   YOU DIDN'T JUST USE DRUPAL.
                   <br />
                   YOU SHAPED IT
                 </motion.h2>
-
                 <motion.div
                   initial={{ scale: 0, rotate: -45 }}
                   animate={{ scale: 1, rotate: 0 }}
@@ -272,13 +271,12 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
                   />
                   <div className="absolute inset-0 rounded-full border border-white/5 scale-150"></div>
                 </motion.div>
-
                 <div className="space-y-2">
                   <motion.h3
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 }}
-                    className="text-4xl md:text-5xl font-extrabold text-white font-display tracking-tight uppercase"
+                    className="text-4xl font-extrabold text-white font-display tracking-tight uppercase"
                   >
                     MEMBER SINCE {sinceYear}
                   </motion.h3>
@@ -290,13 +288,14 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
                   >
                     That's{" "}
                     <span className="text-green-400 font-bold">
-                      ~{yearsCount} years
+                      ~{yearsCount}
                     </span>{" "}
                     of
                     <br />
                     showing up for open source.
                   </motion.p>
                 </div>
+                <div className="h-10 flex-none" /> {/* Bottom spacer */}
               </div>
 
               <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-blue-900/90 via-blue-900/30 to-transparent pointer-events-none z-0" />
@@ -973,9 +972,9 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
           !showTotal && !showCoreAI && !showMentorship && !showRoles;
 
         return (
-          <div className="flex flex-col items-center h-full w-full relative overflow-auto z-10 bg-[#0a0a0a]">
+          <div className="flex flex-col items-center h-full w-full relative z-10 overflow-hidden bg-[#0a0a0a] overflow-y-auto no-scrollbar">
             <SlideBackground />
-            <div className="relative z-10 flex flex-col items-center justify-between h-full w-full py-8 px-4 md:px-6">
+            <div className="relative z-10 flex flex-col items-center h-full w-full py-6 px-4 md:px-6 md:py-4">
               <SlideHeader
                 title="2025 YEAR IN REVIEW"
                 progressIndex={index}
@@ -1041,7 +1040,7 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
                         alt="User"
                       />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <h3 className="text-xl font-bold text-white">
                         {data.username}
                       </h3>
@@ -1061,10 +1060,10 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
                     >
                       <GitCommit className="w-6 h-6 text-orange-400 mb-2" />
                       <div>
-                        <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-orange-300 to-white">
+                        <div className="text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-orange-300 to-white">
                           {data.total_issues_count}
                         </div>
-                        <div className="text-xs text-orange-200/70 font-medium mt-1">
+                        <div className="text-[10px] text-orange-200/70 font-medium mt-1">
                           TOTAL CONTRIBS
                         </div>
                       </div>
@@ -1148,7 +1147,7 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
                         <div className="text-xs text-gray-400">
                           Member Since
                         </div>
-                        <div className="font-bold">{data.member_since}</div>
+                        <div className="font-bold">{data.account_created_year}</div>
                       </div>
                     </motion.div>
                   )}
@@ -1255,7 +1254,7 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
     const origin = window.location.origin;
     const userPath = `/user/${data.username}`;
 
-    const url = window.location.pathname.startsWith('/user/')
+    const url = window.location.pathname.startsWith("/user/")
       ? window.location.href
       : `${origin}${userPath}`;
 
