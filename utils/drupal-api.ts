@@ -285,8 +285,6 @@ export async function collectAndStoreDrupalUserData(
 ) {
   const normalizedUsername = safeDecode(username);
 
-  console.log(`NORMAL`, normalizeDrupalUsername)
-
   /* ---------- CACHE ---------- */
 
   const { data: existing, error } = await supabase
