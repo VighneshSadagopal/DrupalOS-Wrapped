@@ -24,11 +24,8 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
   const [isAnimatingEntry, setIsAnimatingEntry] = useState(true);
   const [isSharing, setIsSharing] = useState<null | 'linkedin' | 'x'>(null);
   const [linkCopied, setLinkCopied] = useState(false);
-  const [roles, setRoles] = useState<string[]>(data.contributorRoles || []);
+  const [roles, setRoles] = useState<string[]>(data.contributor_roles || []);
   
-
-  console.log("DATA", data)
-    
 
   // Image Error Handling State
   const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.username)}&background=000&color=0ea5e9&size=128`;
@@ -921,7 +918,7 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
   
   const handleCopyLink = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigator.clipboard.writeText(window.location.href);
+    navigator.clipboard.writeText(window.location.href + `user/${data.username}`);
     setLinkCopied(true);
     setTimeout(() => setLinkCopied(false), 2000);
   };

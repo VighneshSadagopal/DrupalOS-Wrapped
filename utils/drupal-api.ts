@@ -62,11 +62,28 @@ export const supabase = createClient(
   "sb_publishable_dyHjVo3nr3IJysYwpDabrw_qCGkmkqC"
 );
 
+function safeDecode(value) {
+  if (typeof value !== 'string') return value
+
+  // Only decode if it looks encoded
+  if (/%[0-9A-Fa-f]{2}/.test(value) || /\+/.test(value)) {
+    try {
+      return decodeURIComponent(value.replace(/\+/g, ' '))
+    } catch {
+      return value // malformed encoding → leave it alone
+    }
+  }
+
+  return value
+}
+
+
 /* ============================================================
    Drupal Username → UID Resolver
 ============================================================ */
 
 async function resolveDrupalUserId(username: string): Promise<number> {
+  console.log(username)
   const params = new URLSearchParams({ "filter[name]": username });
 
   const response = await fetch(`${DRUPAL_USER_BASE_URL}?${params.toString()}`, {
@@ -266,7 +283,9 @@ export async function collectAndStoreDrupalUserData(
   username: string,
   months: number
 ) {
-  const normalizedUsername = username;
+  const normalizedUsername = safeDecode(username);
+
+  console.log(`NORMAL`, normalizeDrupalUsername)
 
   /* ---------- CACHE ---------- */
 
