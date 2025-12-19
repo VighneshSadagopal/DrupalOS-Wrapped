@@ -918,7 +918,9 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
   
   const handleCopyLink = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!window.location.href.includes('user')) {
+    const match = window.location.href.match(/\/user\/([^/]+)/);
+   
+    if (match == null) {
       navigator.clipboard.writeText(window.location.href + `user/${data.username}`);
     } else {
       navigator.clipboard.writeText(window.location.href);
