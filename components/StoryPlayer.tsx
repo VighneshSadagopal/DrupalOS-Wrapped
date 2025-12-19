@@ -1252,16 +1252,12 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
   const handleCopyLink = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    console.log(`HEYEYEYE`)
-
     const origin = window.location.origin;
     const userPath = `/user/${data.username}`;
 
-    const url = window.location.pathname.startsWith("/user/")
+    const url = window.location.pathname.startsWith('/user/')
       ? window.location.href
       : `${origin}${userPath}`;
-
-    console.log(`URL`, url)
 
     navigator.clipboard.writeText(url);
 
