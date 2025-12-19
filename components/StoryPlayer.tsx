@@ -918,7 +918,11 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
   
   const handleCopyLink = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigator.clipboard.writeText(window.location.href + `user/${data.username}`);
+    if (!window.location.href.includes('user')) {
+      navigator.clipboard.writeText(window.location.href + `user/${data.username}`);
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+    }
     setLinkCopied(true);
     setTimeout(() => setLinkCopied(false), 2000);
   };
