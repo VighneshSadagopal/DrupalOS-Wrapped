@@ -13,7 +13,6 @@ import { transformDrupalData } from '../utils/transformers';
 
 import StoryPlayer from './StoryPlayer';
 import UsernameForm from './sections/UsernameForm';
-import { collectAndStoreDrupalUserData } from '@/utils/drupal-api';
 import { getDrupalUserData } from '@/app/actions';
 
 interface StoryExperienceProps {
@@ -43,6 +42,7 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
   const [loadingAvatar, setLoadingAvatar] = useState<string | undefined>(
     undefined
   );
+  const[drupalData, setDrupalData] = useState<UserYearData | null>(null) 
 
   const themeStyles = THEMES[theme];
 
@@ -52,7 +52,7 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
     setLoadingAvatar(undefined);
 
     const data = await getDrupalUserData(username)
-    console.log("CLIENT", data)
+    setDrupalData(data)
 
     try {
       // 1. Pre-fetch avatar for instant feedback
@@ -129,7 +129,7 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
               initial={{ opacity: 0, scale: 1.1 }}
               animate={{ opacity: 1, scale: 1 }}
             >
-              <StoryPlayer data={userData} onExit={handleReset} />
+              <StoryPlayer data={userData} onExit={handleReset} drupalUserData={drupalData}  />
             </motion.div>
           )}
         </AnimatePresence>
