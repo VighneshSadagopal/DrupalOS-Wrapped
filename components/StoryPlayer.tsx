@@ -612,11 +612,11 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
                   transition={{ delay: 0.6 }}
                   className="text-2xl md:text-3xl font-extrabold text-white font-display leading-tight uppercase mb-4"
                 >
-                  YOU WEAR MANY HATS
+                  {displayRoles?.length > 1 ? "YOU WEAR MANY HATS" : "YOU WEAR A KEY HAT"}
                 </motion.h3>
 
                 <motion.div
-                  className="grid grid-cols-2 gap-3 w-full"
+                  className={displayRoles?.length > 1 ? "grid grid-cols-2 gap-3 w-full" : "flex flex-col gap-3 w-full"}
                   initial="hidden"
                   animate="visible"
                   variants={{
