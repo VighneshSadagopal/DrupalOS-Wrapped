@@ -48,7 +48,7 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
   const [roles, setRoles] = useState<string[]>(data.contributor_roles || []);
 
   // Image Error Handling State
-  const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+  const fallbackAvatar = data.userAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(
     data.username
   )}&background=000&color=0ea5e9&size=128`;
   const [avatarSrc, setAvatarSrc] = useState<string>(
@@ -1254,9 +1254,7 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
     const origin = window.location.origin;
     const userPath = `/user/${data.username}`;
 
-    const url = window.location.pathname.startsWith("/user/")
-      ? window.location.href
-      : `${origin}${userPath}`;
+    const url = `${origin}${userPath}`;
 
     navigator.clipboard.writeText(url);
 
@@ -1268,7 +1266,10 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
   const handleShare = (e: React.MouseEvent, platform: "linkedin" | "x") => {
     e.stopPropagation();
 
-    const currentUrl = window.location.href;
+    const origin = window.location.origin;
+    const userPath = `/user/${data.username}`;
+
+    const url = `${origin}${userPath}`;
 
     // Caption (keep it short – LinkedIn truncates long text)
     const caption = `
@@ -1279,7 +1280,7 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
   • Community highlights
   
   Check it out 👇
-  ${currentUrl}
+  ${url}
   
   #Drupal #OpenSource #Drupal2025
     `.trim();

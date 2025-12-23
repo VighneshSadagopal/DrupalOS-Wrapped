@@ -4,6 +4,7 @@ import { Search, Loader2, AlertCircle, PlayCircle } from 'lucide-react';
 import Confetti from '../ui/Confetti';
 import TicTacToe from '../ui/TicTacToe';
 import { fadeInUp } from '../../utils/animations';
+import Link from 'next/link';
 
 interface UsernameFormProps {
   onSearch: (username: string) => Promise<void>;
@@ -94,7 +95,7 @@ const UsernameForm: React.FC<UsernameFormProps> = ({ onSearch, onDemo, loading, 
                   <PlayCircle className="w-4 h-4" />
                   No account? Try Demo Mode
                 </button> */}
-                <div className='font-medium text-sm text-stone-400 py-2'>Powered by QED42</div>
+                <div className='font-medium text-sm text-stone-400 py-2'>Powered by <Link href={"https://qed42.com"} target="_blank" className="underline">QED42</Link></div>
               </div>
             </>
           ) : (

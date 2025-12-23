@@ -83,7 +83,6 @@ function safeDecode(value) {
 ============================================================ */
 
 async function resolveDrupalUserId(username: string): Promise<number> {
-  console.log(username)
   const params = new URLSearchParams({ "filter[name]": username });
 
   const response = await fetch(`${DRUPAL_USER_BASE_URL}?${params.toString()}`, {
@@ -101,6 +100,33 @@ async function resolveDrupalUserId(username: string): Promise<number> {
   }
 
   return Number(json.data[0].attributes.drupal_internal__uid);
+}
+
+async function fetchDrupalUser(username) {
+  try {
+    const response = await fetch(
+      `https://www.drupal.org/jsonapi/user/user?filter[name]=${encodeURIComponent(username)}&include=user_picture&fields[user--user]=&fields[file--file]=uri,filename`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/vnd.api+json',
+          'Accept': 'application/vnd.api+json',
+        },
+        // Optional: Add caching strategy for Next.js
+        next: { revalidate: 3600 } // Revalidate every hour
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching Drupal user:', error);
+    throw error;
+  }
 }
 
 /* ============================================================
@@ -285,6 +311,9 @@ export async function collectAndStoreDrupalUserData(
 ) {
   const normalizedUsername = safeDecode(username);
 
+  const user = await fetchDrupalUser(normalizedUsername);
+  const userAvatar = `https://www.drupal.org${user.included[0].attributes.uri.url}`
+
   /* ---------- CACHE ---------- */
 
   const { data: existing, error } = await supabase
@@ -294,7 +323,7 @@ export async function collectAndStoreDrupalUserData(
     .single();
 
   if (existing) {
-    return { ...existing, source: "supabase" };
+    return { ...existing, userAvatar, source: "supabase" };
   }
 
   if (error && error.code !== "PGRST116") {
@@ -334,6 +363,7 @@ export async function collectAndStoreDrupalUserData(
 
   return {
     ...payload,
+    userAvatar,
     scrapedProfileUrl: scraped.profileUrl,
     source: "fresh",
   };
