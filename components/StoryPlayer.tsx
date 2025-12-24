@@ -50,9 +50,11 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
   const [roles, setRoles] = useState<string[]>(data.contributor_roles || []);
 
   // Image Error Handling State
-  const fallbackAvatar = data.userAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(
-    data.username
-  )}&background=000&color=0ea5e9&size=128`;
+  const fallbackAvatar =
+    data.userAvatar ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      data.username
+    )}&background=000&color=0ea5e9&size=128`;
   const [avatarSrc, setAvatarSrc] = useState<string>(
     data.avatarUrl || fallbackAvatar
   );
@@ -70,11 +72,11 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
     audioRef.current = audio;
 
     const playPromise = audio.play();
-    
+
     if (playPromise !== undefined) {
       playPromise.catch((error) => {
         console.log("Autoplay prevented:", error);
-        setIsMuted(true);
+        // setIsMuted(true); // User requested not to mute by default, removing this.
       });
     }
 
@@ -650,11 +652,17 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
                   transition={{ delay: 0.6 }}
                   className="text-2xl md:text-3xl font-extrabold text-white font-display leading-tight uppercase mb-4"
                 >
-                  {displayRoles?.length > 1 ? "YOU WEAR MANY HATS" : "YOU WEAR A KEY HAT"}
+                  {displayRoles?.length > 1
+                    ? "YOU WEAR MANY HATS"
+                    : "YOU WEAR A KEY HAT"}
                 </motion.h3>
 
                 <motion.div
-                  className={displayRoles?.length > 1 ? "grid grid-cols-2 gap-3 w-full" : "flex flex-col gap-3 w-full"}
+                  className={
+                    displayRoles?.length > 1
+                      ? "grid grid-cols-2 gap-3 w-full"
+                      : "flex flex-col gap-3 w-full"
+                  }
                   initial="hidden"
                   animate="visible"
                   variants={{
@@ -1185,7 +1193,9 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
                         <div className="text-xs text-gray-400">
                           Member Since
                         </div>
-                        <div className="font-bold">{data.account_created_year}</div>
+                        <div className="font-bold">
+                          {data.account_created_year}
+                        </div>
                       </div>
                     </motion.div>
                   )}
@@ -1264,6 +1274,11 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
 
   // Navigation handlers
   const nextSlide = () => {
+    // Attempt to play audio if it was prevented by browser policy initially
+    if (audioRef.current && audioRef.current.paused && !isMuted) {
+      audioRef.current.play().catch(() => {});
+    }
+
     if (currentSlide < totalSlides - 1) {
       setCurrentSlide((prev) => prev + 1);
     } else {
@@ -1589,28 +1604,32 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
         </AnimatePresence>
       </div>
 
-      {/* Footer Branding */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-60 flex items-center gap-1.5 text-[10px] md:text-xs font-medium text-white/50 pointer-events-auto no-capture">
-        <a
-          href="https://www.qed42.com" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="hover:text-white transition-colors"
-          onClick={(e) => e.stopPropagation()}
-        >
-          QED42
-        </a>
-        <span>🫶</span>
-        <a
-          href="https://www.drupal.org" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="hover:text-white transition-colors"
-          onClick={(e) => e.stopPropagation()}
-        >
-          Drupal
-        </a>
-      </div>
+      {currentSlideDef.id !== "summary" && (
+        <>
+          {/* Footer Branding */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-60 flex items-center gap-1.5 text-[10px] md:text-xs font-medium text-white/50 pointer-events-auto no-capture">
+            <a
+              href="https://www.qed42.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition-colors"
+              onClick={(e) => e.stopPropagation()}
+            >
+              QED42
+            </a>
+            <span>🫶</span>
+            <a
+              href="https://www.drupal.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition-colors"
+              onClick={(e) => e.stopPropagation()}
+            >
+              Drupal
+            </a>
+          </div>
+        </>
+      )}
     </div>
   );
 };
