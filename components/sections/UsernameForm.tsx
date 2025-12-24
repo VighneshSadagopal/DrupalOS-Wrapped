@@ -61,7 +61,7 @@ const UsernameForm: React.FC<UsernameFormProps> = ({ onSearch, onDemo, loading, 
                       id="username"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      placeholder="e.g. Dries"
+                      placeholder="e.g. dries"
                       className={`w-full px-4 py-4 rounded-xl border outline-none transition-all focus:ring-2 focus:ring-blue-500 ${themeStyles.bg} ${themeStyles.border} ${themeStyles.text}`}
                       disabled={loading}
                     />
@@ -108,7 +108,7 @@ const UsernameForm: React.FC<UsernameFormProps> = ({ onSearch, onDemo, loading, 
                  <span>Analyzing 2025 Data...</span>
               </div>
               <p className={`text-sm ${themeStyles.textMuted} max-w-[280px]`}>
-                 We're digging through your contributions. Play a quick game while you wait!
+                 We're digging through your contributions. Play a quick game of tic-tac-toe while you wait!
               </p>
               <TicTacToe themeStyles={themeStyles} userAvatarUrl={userAvatarUrl} />
               <p className={`text-xs ${themeStyles.textMuted} max-w-[280px] italic`}>
