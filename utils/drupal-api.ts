@@ -312,6 +312,11 @@ export async function collectAndStoreDrupalUserData(
   const normalizedUsername = safeDecode(username);
 
   const user = await fetchDrupalUser(normalizedUsername);
+
+  if (!user || user.data.length === 0) {
+    throw new Error("Failed to fetch user data. Please check the username and try again");
+  }
+
   const userAvatar = `https://www.drupal.org${user.included[0].attributes.uri.url}`
 
   /* ---------- CACHE ---------- */

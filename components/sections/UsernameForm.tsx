@@ -111,6 +111,9 @@ const UsernameForm: React.FC<UsernameFormProps> = ({ onSearch, onDemo, loading, 
                  We're digging through your contributions. Play a quick game while you wait!
               </p>
               <TicTacToe themeStyles={themeStyles} userAvatarUrl={userAvatarUrl} />
+              <p className={`text-xs ${themeStyles.textMuted} max-w-[280px] italic`}>
+                Wait times may be slightly longer depending on rate limits and current queue volume.
+              </p>
             </div>
           )}
         </div>

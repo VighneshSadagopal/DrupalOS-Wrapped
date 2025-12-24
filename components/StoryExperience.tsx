@@ -28,6 +28,7 @@ interface StoryExperienceProps {
 
   /** Optional demo data override */
   demoData?: UserYearData;
+  slugUserData?: UserYearData | null;
 }
 
 const StoryExperience: React.FC<StoryExperienceProps> = ({
@@ -54,10 +55,10 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
     setError(null);
     setLoadingAvatar(undefined);
 
-    const data = await getDrupalUserData(username)
-    setDrupalData(data)
-
     try {
+      const data = await getDrupalUserData(username)
+      setDrupalData(data)
+
       // 1. Pre-fetch avatar for instant feedback
       try {
         const userPreview = await fetchUserByUsername(username);
@@ -74,12 +75,13 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
 
       const transformedData = transformDrupalData(apiResponse);
       setUserData(transformedData);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(
-        err.message ||
-          'Failed to fetch user data. Please check the username and try again.'
-      );
+      let errorMessage = 'Failed to fetch user data. Please check the username and try again.';
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -113,7 +115,7 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
         className={`fixed inset-0 w-full h-full overflow-hidden ${themeStyles.bg} flex items-center justify-center`}
       >
         <AnimatePresence mode="wait">
-          {!userData && !slugUserData ? (
+          {!userData && !slugUserData && !drupalData ? (
             <motion.div
               key="form"
               className="w-full h-full overflow-y-auto"

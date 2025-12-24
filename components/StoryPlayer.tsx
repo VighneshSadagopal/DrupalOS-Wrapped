@@ -239,7 +239,7 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
             }}
             className="mt-12 px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full text-sm font-semibold tracking-wider transition-all backdrop-blur-sm"
           >
-            START SEQUENCE
+            YOUR WRAP IS READY
           </motion.button>
         </div>
       ),
@@ -1607,26 +1607,40 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
       {currentSlideDef.id !== "summary" && (
         <>
           {/* Footer Branding */}
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-60 flex items-center gap-1.5 text-[10px] md:text-xs font-medium text-white/50 pointer-events-auto no-capture">
-            <a
-              href="https://www.qed42.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors"
-              onClick={(e) => e.stopPropagation()}
-            >
-              QED42
-            </a>
-            <span>🫶</span>
-            <a
-              href="https://www.drupal.org"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors"
-              onClick={(e) => e.stopPropagation()}
-            >
-              Drupal
-            </a>
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-60 flex flex-col items-center gap-1 pointer-events-auto no-capture">
+            <div className="flex items-center gap-1.5 text-[10px] md:text-xs font-medium text-white/50">
+              <a
+                href="https://www.qed42.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                QED42
+              </a>
+              <span>🫶</span>
+              <a
+                href="https://www.drupal.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                Drupal
+              </a>
+            </div>
+            <div className="text-[10px] md:text-xs font-medium text-white/50">
+              Make it awesome -{" "}
+              <a
+                href="https://github.com/VighneshSadagopal/DrupalOS-Wrapped"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors underline"
+                onClick={(e) => e.stopPropagation()}
+              >
+                GitHub
+              </a>
+            </div>
           </div>
         </>
       )}
