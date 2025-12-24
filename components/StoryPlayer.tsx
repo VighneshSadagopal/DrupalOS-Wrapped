@@ -239,7 +239,7 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
             }}
             className="mt-12 px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full text-sm font-semibold tracking-wider transition-all backdrop-blur-sm"
           >
-            YOUR WRAP IS READY
+            YOUR DRUPAL WRAP IS READY
           </motion.button>
         </div>
       ),
@@ -1418,11 +1418,11 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
         </div>
       )}
 
-      <div className="absolute top-4 right-4 z-60 flex items-center gap-3 no-capture">
+      <div className="absolute top-4 right-4 z-[100] flex items-center gap-3 pointer-events-none">
         {/* Mute/Unmute Button */}
         <button
           onClick={toggleMute}
-          className="p-2 text-white/70 hover:text-white bg-black/40 rounded-full backdrop-blur-md border border-white/10 transition-colors"
+          className="p-2 text-white/70 hover:text-white bg-black/40 rounded-full backdrop-blur-md border border-white/10 transition-colors pointer-events-auto"
           title={isMuted ? "Unmute Music" : "Mute Music"}
         >
           {isMuted ? (
@@ -1435,7 +1435,7 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
         {/* Play/Pause Button */}
         <button
           onClick={togglePlayPause}
-          className="p-2 text-white/70 hover:text-white bg-black/40 rounded-full backdrop-blur-md border border-white/10 transition-colors"
+          className="p-2 text-white/70 hover:text-white bg-black/40 rounded-full backdrop-blur-md border border-white/10 transition-colors pointer-events-auto"
           title={isPlaying ? "Pause Autoscroll" : "Resume Autoscroll"}
         >
           {isPlaying ? (
@@ -1451,7 +1451,7 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
             e.stopPropagation();
             onExit();
           }}
-          className="p-2 text-white/70 hover:text-white bg-black/40 rounded-full backdrop-blur-md border border-white/10 transition-colors"
+          className="p-2 text-white/70 hover:text-white bg-black/40 rounded-full backdrop-blur-md border border-white/10 transition-colors pointer-events-auto"
         >
           <X className="w-6 h-6" />
         </button>
