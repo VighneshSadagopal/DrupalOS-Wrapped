@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation'
-import { MotionConfig, AnimatePresence, motion } from 'framer-motion';
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { MotionConfig, AnimatePresence, motion } from "framer-motion";
 
-import { THEMES, MOCK_DATA } from '../constants';
-import { ThemeType, UserYearData } from '../types';
+import { THEMES, MOCK_DATA } from "../constants";
+import { ThemeType, UserYearData } from "../types";
 import {
   fetchIssuesWithCommentsByUsername,
   fetchUserByUsername,
-} from '../api/drupal';
-import { transformDrupalData } from '../utils/transformers';
+} from "../api/drupal";
+import { transformDrupalData } from "../utils/transformers";
 
-import StoryPlayer from './StoryPlayer';
-import UsernameForm from './sections/UsernameForm';
-import { getDrupalUserData } from '@/app/actions';
+import StoryPlayer from "./StoryPlayer";
+import UsernameForm from "./sections/UsernameForm";
+import { getDrupalUserData } from "@/app/actions";
 
 interface StoryExperienceProps {
   /** Visual theme */
@@ -32,11 +32,11 @@ interface StoryExperienceProps {
 }
 
 const StoryExperience: React.FC<StoryExperienceProps> = ({
-  theme = 'muted',
+  theme = "muted",
   reduceMotion = false,
   year = 2025,
   demoData = MOCK_DATA,
-  slugUserData = null
+  slugUserData = null,
 }) => {
   // Data State
   const [userData, setUserData] = useState<UserYearData | null>(null);
@@ -45,8 +45,8 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
   const [loadingAvatar, setLoadingAvatar] = useState<string | undefined>(
     undefined
   );
-  const[drupalData, setDrupalData] = useState<UserYearData | null>(null) 
-  const router = useRouter()
+  const [drupalData, setDrupalData] = useState<UserYearData | null>(null);
+  const router = useRouter();
 
   const themeStyles = THEMES[theme];
 
@@ -56,15 +56,15 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
     setLoadingAvatar(undefined);
 
     try {
-      const data = await getDrupalUserData(username)
-      setDrupalData(data)
+      const data = await getDrupalUserData(username);
+      setDrupalData(data);
 
       // 1. Pre-fetch avatar for instant feedback
       try {
         const userPreview = await fetchUserByUsername(username);
         setLoadingAvatar(userPreview.picture?.url);
       } catch (e) {
-        console.warn('Could not pre-fetch user avatar', e);
+        console.warn("Could not pre-fetch user avatar", e);
       }
 
       // 2. Fetch full data
@@ -77,7 +77,8 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
       setUserData(transformedData);
     } catch (err: unknown) {
       console.error(err);
-      let errorMessage = 'Failed to fetch user data. Please check the username and try again.';
+      let errorMessage =
+        "Failed to fetch user data. Please check the username and try again.";
       if (err instanceof Error) {
         errorMessage = err.message;
       }
@@ -99,18 +100,19 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
   };
 
   const handleReset = () => {
-    if (slugUserData) {
-      router.push('/');
+    if (!slugUserData) {
+      window.location.reload();
       return;
     }
 
+    router.push("/");
     setUserData(null);
     setError(null);
     setLoadingAvatar(undefined);
   };
 
   return (
-    <MotionConfig reducedMotion={reduceMotion ? 'always' : 'user'}>
+    <MotionConfig reducedMotion={reduceMotion ? "always" : "user"}>
       <div
         className={`fixed inset-0 w-full h-full overflow-hidden ${themeStyles.bg} flex items-center justify-center`}
       >
@@ -139,7 +141,10 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
               initial={{ opacity: 0, scale: 1.1 }}
               animate={{ opacity: 1, scale: 1 }}
             >
-              <StoryPlayer data={slugUserData ? slugUserData : drupalData} onExit={handleReset}  />
+              <StoryPlayer
+                data={slugUserData ? slugUserData : drupalData}
+                onExit={handleReset}
+              />
             </motion.div>
           )}
         </AnimatePresence>
