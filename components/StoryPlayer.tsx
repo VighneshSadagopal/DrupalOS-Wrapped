@@ -23,6 +23,8 @@ import {
   Plus,
   Code2,
   Check,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import { collectAndStoreDrupalUserData } from "../utils/drupal-api";
 import html2canvas from "html2canvas";
@@ -55,7 +57,43 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
     data.avatarUrl || fallbackAvatar
   );
 
+  const [isMuted, setIsMuted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   const storyRef = useRef<HTMLDivElement>(null);
+
+  // Initialize and play music
+  useEffect(() => {
+    const audio = new Audio("/upbeat-music.mp3");
+    audio.loop = true;
+    audio.volume = 0.5;
+    audioRef.current = audio;
+
+    const playPromise = audio.play();
+    
+    if (playPromise !== undefined) {
+      playPromise.catch((error) => {
+        console.log("Autoplay prevented:", error);
+        setIsMuted(true);
+      });
+    }
+
+    return () => {
+      audio.pause();
+      audioRef.current = null;
+    };
+  }, []);
+
+  const toggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (audioRef.current) {
+      audioRef.current.muted = !isMuted;
+      if (isMuted) {
+        audioRef.current.play().catch(console.error);
+      }
+      setIsMuted(!isMuted);
+    }
+  };
 
   // Handle Async Data Collection Side Effect
   useEffect(() => {
@@ -1365,8 +1403,20 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
         </div>
       )}
 
-      {/* Header Controls (Hide on capture) */}
-      <div className="absolute top-4 right-4 z-[60] flex items-center gap-3 no-capture">
+      <div className="absolute top-4 right-4 z-60 flex items-center gap-3 no-capture">
+        {/* Mute/Unmute Button */}
+        <button
+          onClick={toggleMute}
+          className="p-2 text-white/70 hover:text-white bg-black/40 rounded-full backdrop-blur-md border border-white/10 transition-colors"
+          title={isMuted ? "Unmute Music" : "Mute Music"}
+        >
+          {isMuted ? (
+            <VolumeX className="w-6 h-6" />
+          ) : (
+            <Volume2 className="w-6 h-6" />
+          )}
+        </button>
+
         {/* Play/Pause Button */}
         <button
           onClick={togglePlayPause}
@@ -1540,7 +1590,7 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
       </div>
 
       {/* Footer Branding */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-[60] flex items-center gap-1.5 text-[10px] md:text-xs font-medium text-white/50 pointer-events-auto no-capture">
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-60 flex items-center gap-1.5 text-[10px] md:text-xs font-medium text-white/50 pointer-events-auto no-capture">
         <a
           href="https://www.qed42.com" 
           target="_blank" 
