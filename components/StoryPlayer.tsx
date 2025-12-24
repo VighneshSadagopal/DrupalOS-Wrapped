@@ -19,9 +19,9 @@ import {
   Calendar,
   Users,
   Award,
+  Link,
   Plus,
   Code2,
-  Link,
   Check,
 } from "lucide-react";
 import { collectAndStoreDrupalUserData } from "../utils/drupal-api";
@@ -1537,6 +1537,29 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
             {currentSlideDef.render(currentSlide, totalSlides)}
           </motion.div>
         </AnimatePresence>
+      </div>
+
+      {/* Footer Branding */}
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-[60] flex items-center gap-1.5 text-[10px] md:text-xs font-medium text-white/50 pointer-events-auto no-capture">
+        <a
+          href="https://www.qed42.com" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="hover:text-white transition-colors"
+          onClick={(e) => e.stopPropagation()}
+        >
+          QED42
+        </a>
+        <span>🫶</span>
+        <a
+          href="https://www.drupal.org" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="hover:text-white transition-colors"
+          onClick={(e) => e.stopPropagation()}
+        >
+          Drupal
+        </a>
       </div>
     </div>
   );
