@@ -80,7 +80,11 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
       let errorMessage =
         "Failed to fetch user data. Please check the username and try again.";
       if (err instanceof Error) {
-        errorMessage = err.message;
+        if (err.message.includes("username")) {
+          errorMessage = err.message;
+        } else {
+          errorMessage = "Something went wrong, please try again later."
+        }
       }
       setError(errorMessage);
     } finally {

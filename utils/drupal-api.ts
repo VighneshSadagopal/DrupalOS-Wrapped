@@ -317,7 +317,10 @@ export async function collectAndStoreDrupalUserData(
     throw new Error("Failed to fetch user data. Please check the username and try again");
   }
 
-  const userAvatar = `https://www.drupal.org${user.included[0].attributes.uri.url}`
+  let userAvatar = null;
+  if (user.included && user.included.length > 0) {
+    userAvatar = `https://www.drupal.org${user.included[0].attributes.uri.url}`
+  }
 
   /* ---------- CACHE ---------- */
 
