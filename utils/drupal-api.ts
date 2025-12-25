@@ -74,7 +74,7 @@ function safeDecode(value) {
     }
   }
 
-  return value
+  return value.toLowerCase()
 }
 
 
@@ -310,7 +310,6 @@ export async function collectAndStoreDrupalUserData(
   months: number
 ) {
   const normalizedUsername = safeDecode(username);
-
   const user = await fetchDrupalUser(normalizedUsername);
 
   if (!user || user.data.length === 0) {
