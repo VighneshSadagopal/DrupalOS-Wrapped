@@ -141,7 +141,7 @@ const StoryExperience: React.FC<StoryExperienceProps> = ({
           ) : (
             <motion.div
               key="story"
-              className="w-full h-full md:max-w-[450px] md:h-[850px] md:max-h-[90vh] relative shadow-2xl md:rounded-[3rem] overflow-hidden"
+              className="w-full h-full relative shadow-2xl"
               initial={{ opacity: 0, scale: 1.1 }}
               animate={{ opacity: 1, scale: 1 }}
             >
