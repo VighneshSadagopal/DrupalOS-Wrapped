@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { UserYearData } from "../types";
 import StarField from "./ui/StarField";
+import { isMobile } from "react-device-detect"; // Optional: or use custom regex check
+
 import {
   X,
   Globe,
@@ -27,7 +29,7 @@ import {
   VolumeX,
 } from "lucide-react";
 import { collectAndStoreDrupalUserData } from "../utils/drupal-api";
-import html2canvas from "html2canvas";
+import html2canvas from "html2canvas-pro";
 
 interface StoryPlayerProps {
   data: UserYearData;
@@ -1018,16 +1020,17 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
           !showTotal && !showCoreAI && !showMentorship && !showRoles;
 
         return (
-          <div className="flex flex-col items-center h-full w-full relative z-10 overflow-hidden bg-[#0a0a0a] overflow-y-auto no-scrollbar">
+          <div className="flex flex-col items-center h-full w-full relative z-10 overflow-hidden bg-[#0a0a0a] overflow-y-auto custom-scrollbar">
             <SlideBackground />
-            <div className="relative z-10 flex flex-col items-center h-full w-full py-6 px-4 md:px-6 md:py-4">
+
+            {/* Container: Max width set for Desktop, padding adjusted for mobile */}
+            <div className="relative z-10 flex flex-col items-center justify-center min-h-full w-full max-w-5xl mx-auto py-6 px-4 md:px-8">
               <SlideHeader
                 title="2025 YEAR IN REVIEW"
                 progressIndex={index}
                 totalSlides={total}
               />
 
-              {/* Conditional Content */}
               {isQuietYear ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -1036,31 +1039,23 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
                 >
                   <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center border border-white/10 relative">
                     <Code2 className="w-10 h-10 text-gray-400" />
-                    <motion.div
-                      animate={{ opacity: [0.2, 0.5, 0.2] }}
-                      transition={{ duration: 3, repeat: Infinity }}
-                      className="absolute inset-0 rounded-full border border-white/20 scale-125"
-                    />
                   </div>
-
                   <div className="space-y-4">
-                    <h2 className="text-3xl font-bold text-white font-display uppercase tracking-wide">
-                      The Quiet Before
-                      <br />
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-                        The Storm
-                      </span>
+                    <h2 className="text-2xl font-bold text-white uppercase tracking-wide">
+                      The Quiet Before The Storm
                     </h2>
-                    <p className="text-gray-300 text-lg">
-                      2025 was a quiet year for contributions, but every great
-                      feature starts with a pause. The community awaits your
-                      next commit in 2026!
+                    <p className="text-gray-400">
+                      2025 was a quiet year, but the community awaits your next
+                      commit!
                     </p>
                   </div>
                 </motion.div>
               ) : (
                 <motion.div
-                  className="grid grid-cols-2 gap-3 w-full max-w-sm flex-1 mb-8"
+                  // GRID STRATEGY:
+                  // Mobile: grid-cols-2 (Allows side-by-side stats)
+                  // Desktop: grid-cols-4 (Expands to full bento)
+                  className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 w-full flex-1 content-center mb-6"
                   initial="hidden"
                   animate="visible"
                   variants={{
@@ -1071,15 +1066,15 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
                     },
                   }}
                 >
-                  {/* Card 1: Profile (Always visible) */}
+                  {/* 1. PROFILE CARD (Full width on Mobile & Half width on Desktop) */}
                   <motion.div
                     variants={{
                       hidden: { opacity: 0, y: 20 },
                       visible: { opacity: 1, y: 0 },
                     }}
-                    className="col-span-2 bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-md rounded-2xl p-4 border border-white/10 flex items-center gap-4"
+                    className="col-span-2 md:col-span-2 bg-gray-900/40 border border-white/10 p-5 rounded-3xl backdrop-blur-md flex items-center gap-4 hover:bg-gray-800/60 transition-colors"
                   >
-                    <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-cyan-400 shrink-0">
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-white/20 shrink-0">
                       <img
                         src={avatarSrc}
                         className="w-full h-full object-cover"
@@ -1087,143 +1082,140 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
                       />
                     </div>
                     <div className="min-w-0">
-                      <h3 className="text-xl font-bold text-white">
+                      <h3 className="text-xl md:text-3xl font-bold text-white truncate">
                         {data.username}
                       </h3>
+                      <p className="text-gray-400 text-xs md:text-sm">
+                        Drupal Contributor
+                      </p>
                     </div>
                   </motion.div>
 
-                  {/* Card 2: Total Impact */}
+                  {/* 2. TOTAL IMPACT (Half width on Mobile & Quarter on Desktop) */}
                   {showTotal && (
                     <motion.div
                       variants={{
                         hidden: { opacity: 0, y: 20 },
                         visible: { opacity: 1, y: 0 },
                       }}
-                      className={`${
-                        showCoreAI ? "col-span-1" : "col-span-2"
-                      } bg-gradient-to-br from-orange-900/40 to-black/60 backdrop-blur-md rounded-2xl p-4 border border-orange-500/20 flex flex-col justify-between`}
+                      className="col-span-1 md:col-span-1 bg-[#2A1C0E]/80 backdrop-blur-md rounded-3xl p-4 md:p-6 border border-orange-500/20 flex flex-col justify-center relative overflow-hidden"
                     >
-                      <GitCommit className="w-6 h-6 text-orange-400 mb-2" />
-                      <div>
-                        <div className="text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-orange-300 to-white">
-                          {data.total_issues_count}
-                        </div>
-                        <div className="text-[10px] text-orange-200/70 font-medium mt-1">
-                          TOTAL CONTRIBS
-                        </div>
+                      <div className="absolute top-3 right-3 text-orange-500/20">
+                        <GitCommit className="w-5 h-5 md:w-6 md:h-6" />
+                      </div>
+                      {/* Smaller text on mobile to fit side-by-side */}
+                      <div className="text-3xl md:text-5xl font-black text-white mb-1">
+                        {data.total_issues_count}
+                      </div>
+                      <div className="text-[10px] md:text-xs text-orange-200/70 font-bold uppercase tracking-wider">
+                        Total Contribs
                       </div>
                     </motion.div>
                   )}
 
-                  {/* Card 3: Core & AI */}
+                  {/* 3. CORE & AI STATS (Half width on Mobile & Quarter on Desktop) */}
                   {showCoreAI && (
-                    <div
-                      className={`flex flex-col gap-3 ${
-                        showTotal ? "col-span-1" : "col-span-2"
-                      }`}
+                    <motion.div
+                      variants={{
+                        hidden: { opacity: 0, y: 20 },
+                        visible: { opacity: 1, y: 0 },
+                      }}
+                      className="col-span-1 md:col-span-1 flex flex-col h-full"
                     >
+                      {/* If both exist, we stack them inside this column. If only one, it fills the space. */}
                       {showCore && (
-                        <motion.div
-                          variants={{
-                            hidden: { opacity: 0, y: 20 },
-                            visible: { opacity: 1, y: 0 },
-                          }}
-                          className={`flex-1 bg-gradient-to-br from-blue-900/40 to-black/60 backdrop-blur-md rounded-2xl p-3 border border-blue-500/20 flex items-center justify-between ${
-                            !showAI ? "h-full" : ""
+                        <div
+                          className={`flex-1 bg-[#1A103C]/80 backdrop-blur-md rounded-3xl p-4 border border-blue-500/20 flex flex-col justify-center ${
+                            showAI ? "mb-3 md:mb-4" : ""
                           }`}
                         >
-                          <div className="flex flex-col">
-                            <span className="text-2xl font-bold text-blue-200">
-                              {data.total_issues_for_drupal_count}
-                            </span>
-                            <span className="text-[10px] text-blue-300/70 uppercase">
+                          <span className="text-2xl md:text-3xl font-bold text-blue-100">
+                            {data.total_issues_for_drupal_count}
+                          </span>
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] text-blue-300/60 uppercase tracking-wider">
                               Core
                             </span>
+                            <DrupalDrop className="w-4 h-4 text-blue-500" />
                           </div>
-                          <DrupalDrop className="w-6 h-6 text-blue-500" />
-                        </motion.div>
+                        </div>
                       )}
-
                       {showAI && (
-                        <motion.div
-                          variants={{
-                            hidden: { opacity: 0, y: 20 },
-                            visible: { opacity: 1, y: 0 },
-                          }}
-                          className={`flex-1 bg-gradient-to-br from-purple-900/40 to-black/60 backdrop-blur-md rounded-2xl p-3 border border-purple-500/20 flex items-center justify-between ${
-                            !showCore ? "h-full" : ""
-                          }`}
-                        >
-                          <div className="flex flex-col">
-                            <span className="text-2xl font-bold text-purple-200">
-                              {data.total_issues_for_ai_count}
-                            </span>
-                            <span className="text-[10px] text-purple-300/70 uppercase">
+                        <div className="flex-1 bg-[#2D1B36]/80 backdrop-blur-md rounded-3xl p-4 border border-purple-500/20 flex flex-col justify-center">
+                          <span className="text-2xl md:text-3xl font-bold text-purple-100">
+                            {data.total_issues_for_ai_count}
+                          </span>
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] text-purple-300/60 uppercase tracking-wider">
                               AI
                             </span>
+                            <Sparkles className="w-4 h-4 text-purple-500" />
                           </div>
-                          <Sparkles className="w-6 h-6 text-purple-500" />
-                        </motion.div>
+                        </div>
                       )}
-                    </div>
+                    </motion.div>
                   )}
 
-                  {/* Card 4: Mentorship */}
+                  {/* 4. MENTORSHIP (Full width on both) */}
                   {showMentorship && (
                     <motion.div
                       variants={{
                         hidden: { opacity: 0, y: 20 },
                         visible: { opacity: 1, y: 0 },
                       }}
-                      className="col-span-2 bg-gradient-to-br from-green-900/30 to-black/60 backdrop-blur-md rounded-2xl p-4 border border-green-500/20 flex items-center justify-between"
+                      className="col-span-2 md:col-span-2 bg-gradient-to-br from-green-900/30 to-black/80 backdrop-blur-md rounded-3xl p-5 border border-green-500/20 flex flex-col justify-between"
                     >
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-green-500/20 rounded-lg">
-                          <GraduationCap className="w-5 h-5 text-green-400" />
+                      <div className="flex items-center gap-4">
+                        <div className="p-2 md:p-3 bg-green-500/20 rounded-xl">
+                          <GraduationCap className="w-5 h-5 md:w-6 md:h-6 text-green-400" />
                         </div>
                         <div>
-                          <div className="text-sm text-gray-200">Mentored</div>
-                          <div className="text-xs text-green-400 font-mono">
+                          <div className="text-base md:text-lg font-bold text-white">
+                            Mentored
+                          </div>
+                          <div className="text-green-400 font-mono text-xs md:text-sm">
                             {data.mentee_count} Contributors
                           </div>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-xs text-gray-400">
+                      <div className="mt-4 flex justify-end">
+                        <span className="text-[10px] md:text-xs text-gray-500 uppercase mr-2 mt-1">
                           Member Since
-                        </div>
-                        <div className="font-bold">
+                        </span>
+                        <span className="text-white font-bold font-mono text-sm">
                           {data.account_created_year}
-                        </div>
+                        </span>
                       </div>
                     </motion.div>
                   )}
 
-                  {/* Card 5: Roles */}
+                  {/* 5. ROLES (Full width on both) */}
                   {showRoles && (
                     <motion.div
                       variants={{
                         hidden: { opacity: 0, y: 20 },
                         visible: { opacity: 1, y: 0 },
                       }}
-                      className="col-span-2 bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10"
+                      className="col-span-2 md:col-span-2 bg-gray-900/40 backdrop-blur-md rounded-3xl p-5 border border-white/10 flex flex-col"
                     >
-                      <div className="text-xs text-yellow-500 font-bold uppercase tracking-wider mb-2 flex items-center gap-2">
-                        <Shield className="w-3 h-3" /> Key Roles
+                      <div className="flex items-center gap-2 mb-3">
+                        <Shield className="w-3 h-3 md:w-4 md:h-4 text-yellow-500" />
+                        <h4 className="text-[10px] md:text-xs font-bold text-yellow-500 uppercase tracking-widest">
+                          Key Roles
+                        </h4>
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {topRoles.map((r, i) => (
                           <span
                             key={i}
-                            className="text-[10px] px-2 py-1 bg-white/10 rounded-full text-gray-300 border border-white/5 truncate max-w-[150px]"
+                            className="text-[10px] md:text-xs px-2 md:px-3 py-1 bg-white/10 rounded-full text-gray-200 border border-white/5 truncate max-w-[150px]"
                           >
                             {r}
                           </span>
                         ))}
                         {hasMoreRoles && (
-                          <span className="text-[10px] px-2 py-1 bg-yellow-500/20 text-yellow-200 rounded-full border border-yellow-500/30">
-                            +{roles.length - 3} more
+                          <span className="text-[10px] md:text-xs px-2 md:px-3 py-1 bg-yellow-500/20 text-yellow-200 rounded-full border border-yellow-500/30">
+                            +{data.contributor_roles.length - 3} more
                           </span>
                         )}
                       </div>
@@ -1233,15 +1225,17 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
               )}
 
               {/* Action Buttons */}
-              <div className="w-full max-w-sm flex flex-col gap-3 z-50 no-capture mt-auto md:mt-0">
+              <div className="w-full grid grid-cols-2 gap-3 z-50 no-capture mt-auto">
                 <motion.button
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 1 }}
                   onClick={(e) => handleShare(e, "linkedin")}
-                  className="w-full py-4 rounded-full bg-[#0077b5] text-white font-bold text-lg flex items-center justify-center gap-2 hover:bg-[#006396] transition-colors shadow-[0_0_20px_rgba(0,119,181,0.3)]"
+                  className="w-full py-3 md:py-4 rounded-full bg-[#0077b5] text-white font-bold text-sm md:text-lg flex items-center justify-center gap-2 hover:bg-[#006396] transition-all"
                 >
-                  <Linkedin className="w-5 h-5" /> Share on LinkedIn
+                  <Linkedin className="w-4 h-4 md:w-5 md:h-5" />
+                  <span className="hidden md:inline">Share on LinkedIn</span>
+                  <span className="md:hidden">Share</span>
                 </motion.button>
 
                 <motion.button
@@ -1249,18 +1243,18 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 1.1 }}
                   onClick={handleCopyLink}
-                  className="w-full py-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold text-lg flex items-center justify-center gap-2 hover:bg-white/20 transition-colors"
+                  className="w-full py-3 md:py-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold text-sm md:text-lg flex items-center justify-center gap-2 hover:bg-white/20 transition-all"
                 >
                   {linkCopied ? (
-                    <Check className="w-5 h-5 text-green-400" />
+                    <Check className="w-4 h-4 md:w-5 md:h-5 text-green-400" />
                   ) : (
-                    <Link className="w-5 h-5" />
+                    <Link className="w-4 h-4 md:w-5 md:h-5" />
                   )}
-                  {linkCopied ? "Link Copied!" : "Copy Link"}
+                  {linkCopied ? "Copied" : "Copy Link"}
                 </motion.button>
               </div>
 
-              <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-indigo-900/60 via-purple-900/20 to-transparent pointer-events-none z-0" />
+              <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-indigo-900/40 via-purple-900/10 to-transparent pointer-events-none z-0" />
             </div>
           </div>
         );
@@ -1316,43 +1310,138 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
   };
 
   // Share Handler
-  const handleShare = (e: React.MouseEvent, platform: "linkedin" | "x") => {
+  const handleShare = async (
+    e: React.MouseEvent,
+    platform: "linkedin" | "x"
+  ) => {
     e.stopPropagation();
+    if (!storyRef.current || isSharing) return;
 
-    const origin = window.location.origin;
-    const userPath = `/user/${data.username}`;
+    // 1. DEFINE TEXT
+    const text = `A year of learning and giving back - my Drupal contribution journey in 2025. 🚀 
+Check out my highlight! : https://drupal-wrapped.qed42.net/user/${data.username} 
+Explore yours: https://drupal-wrapped.qed42.net 
+#DrupalWrapped2025`;
 
-    const url = `${origin}${userPath}`;
+    // 2. DETECT MOBILE
+    const isMobileDevice =
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      );
 
-    // Caption (keep it short – LinkedIn truncates long text)
-    const caption = `
-  My Drupal 2025 Year in Review 🚀💧
-  
-  • Contributions
-  • Open-source journey
-  • Community highlights
-  
-  Check it out 👇
-  ${url}
-  
-  #Drupal #OpenSource #Drupal2025
-    `.trim();
+    // 3. MOBILE LINKEDIN SPECIFIC: COPY & ALERT IMMEDIATELY
+    if (platform === "linkedin" && isMobileDevice) {
+      try {
+        // Attempt modern clipboard copy
+        await navigator.clipboard.writeText(text);
+      } catch (err) {
+        console.warn("Clipboard API failed, using fallback...", err);
+        // Fallback for older webviews/browsers
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+          document.execCommand("copy");
+        } catch (e) {
+          console.error("Fallback copy failed", e);
+        }
+        document.body.removeChild(textArea);
+      }
 
-    let shareUrl = "";
-
-    if (platform === "linkedin") {
-      // LinkedIn feed share (TEXT + URL)
-      shareUrl = `https://www.linkedin.com/feed/?shareActive=true&text=${encodeURIComponent(
-        caption
-      )}`;
-    } else {
-      // X / Twitter
-      shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-        caption
-      )}`;
+      // Show Alert immediately so user knows text is ready
+      // We do this BEFORE generation so they don't think nothing is happening
+      alert(
+        "Caption copied! The image will download shortly. You can then post it manually."
+      );
     }
 
-    window.open(shareUrl, "_blank", "noopener,noreferrer");
+    setIsSharing(platform);
+
+    try {
+      const currentSlideId = activeSlides[currentSlide].id;
+
+      // 4. CAPTURE SCREENSHOT
+      const canvas = await html2canvas(storyRef.current, {
+        useCORS: true,
+        allowTaint: true,
+        scale: 2,
+        backgroundColor: "#000000",
+        ignoreElements: (element) => element.classList.contains("no-capture"),
+        logging: false,
+        onclone: (clonedDoc) => {
+          // Fix gradient text colors
+          const gradientTexts = clonedDoc.querySelectorAll(
+            ".bg-clip-text"
+          ) as NodeListOf<HTMLElement>;
+          gradientTexts.forEach((el) => {
+            el.style.backgroundImage = "none";
+            el.style.background = "none";
+            el.style.webkitTextFillColor = "initial";
+            el.style.color = "#ffffff";
+
+            if (el.className.includes("from-orange"))
+              el.style.color = "#fb923c";
+            else if (el.className.includes("from-blue"))
+              el.style.color = "#60a5fa";
+            else if (el.className.includes("from-purple"))
+              el.style.color = "#a855f7";
+            else if (el.className.includes("from-green"))
+              el.style.color = "#4ade80";
+            else if (el.className.includes("from-cyan"))
+              el.style.color = "#22d3ee";
+            else if (el.className.includes("from-indigo"))
+              el.style.color = "#818cf8";
+          });
+
+          // Hide unwanted elements
+          const ignored = clonedDoc.querySelectorAll(
+            ".no-capture"
+          ) as NodeListOf<HTMLElement>;
+          ignored.forEach((el) => (el.style.display = "none"));
+        },
+      });
+
+      // 5. DOWNLOAD IMAGE
+      const image = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = image;
+      link.download = `drupal-2025-highlight-${data.username}-${currentSlideId}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // 6. HANDLING REDIRECTION
+      if (platform === "linkedin") {
+        if (isMobileDevice) {
+          // MOBILE: DO NOTHING.
+          // We already copied text and downloaded the image.
+          // We do NOT redirect to LinkedIn.
+          return;
+        } else {
+          // DESKTOP: Redirect to LinkedIn Feed with text param
+          const shareUrl = `https://www.linkedin.com/feed/?shareActive=true&text=${encodeURIComponent(
+            text
+          )}`;
+          window.open(shareUrl, "_blank");
+        }
+      } else {
+        // TWITTER / X (Redirects normally on all devices)
+        const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+          text
+        )}`;
+        window.open(shareUrl, "_blank");
+      }
+    } catch (err) {
+      console.error("Sharing failed:", err);
+      if (isMobileDevice)
+        alert("Sorry, there was an issue generating the image.");
+    } finally {
+      setIsSharing(null);
+    }
   };
 
   // Auto-scroll Logic
