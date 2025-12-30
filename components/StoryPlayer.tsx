@@ -103,7 +103,6 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
   useEffect(() => {
     const enrichData = async () => {
       try {
-        console.log("Enriching data for:", data.username);
         const result = await collectAndStoreDrupalUserData(data.username, 12);
         // Update roles if found in scraped data
         if (
@@ -1076,7 +1075,9 @@ const StoryPlayer: React.FC<StoryPlayerProps> = ({ data, onExit }) => {
                   >
                     <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-white/20 shrink-0">
                       <img
-                        src={avatarSrc}
+                        src={`/api/image-proxy?url=${encodeURIComponent(
+                          avatarSrc
+                        )}`}
                         className="w-full h-full object-cover"
                         alt="User"
                       />
